@@ -1,0 +1,1009 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+
+    <title>파엠 풍설 데이터베이스</title>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no"/>
+    <meta name="description" content="파엠 풍설 데이터베이스">
+    <meta property="og:title" content="파엠 풍설 데이터베이스">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="파엠 풍설 데이터베이스">
+    <meta property="og:site_name" content="파엠 풍설 데이터베이스">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="shortcut icon" href="image/icon/fabicon_57.png" type="image/x-icon"/>
+    <link rel="icon" href="image/icon/fabicon_57.png" type="image/x-icon"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="image/icon/fabicon_57.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="image/icon/fabicon_114.png"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css">
+    <link rel="stylesheet" href="assets/css/select2.min.css"/>
+    <link rel="stylesheet" href="assets/css/main.css"/>
+
+</head>
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/select2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"
+        integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"
+        integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13"
+        crossorigin="anonymous"></script>
+<script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="navBar">
+    <div class="container-fluid" style="margin : 0 10px">
+        <a class="navbar-brand" href="#">파엠 풍설 데이터베이스</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <!--<li class="nav-item"><a class="nav-link" href="skill-list.html">스킬 리스트</a></li>-->
+            </ul>
+        </div>
+    </div>
+</nav>
+<a style="position : fixed; bottom : 20px; right : 20px; width : 50px; height : 50px; border-radius: 100px; z-index: 9999;"
+   href="#"
+   onclick="scrollTop_func();return false;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="#3ba056" class="bi bi-arrow-up-circle-fill"
+         viewBox="0 0 16 16">
+        <path d="M16 8A8 8 0 1 0 0 8a8 8 0 0 0 16 0zm-7.5 3.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"></path>
+    </svg>
+</a>
+<div class="container">
+    <br>
+    <div class="row">
+        <div class="col">
+            <h2><strong>파엠 풍설 클래스체인지 확률 계산</strong></h2>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-lg-6">
+            <label for="class_list">클래스</label>
+            <select class="select_class" id="class_list" style="width : 100%;"></select>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class = "col-lg-6" id ="dropdown_col">
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class = "col-lg-6">
+            <label for="luck">행운</label>
+            <input type ="number" id = "luck" value = "0"/>
+        </div>
+
+    </div>
+    <div class="row mb-4">
+        <div class = "col-lg-6">
+            확률 : <span id = "result"></span>%
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class = "col-lg-6">
+            * 행운은 스탯 보정을 제외한 기초 행운값을 입력해야 합니다.
+        </div>
+    </div>
+
+    <div style="height : 50px"></div>
+</div>
+
+</body>
+</html>
+<script>
+
+    let rank = {
+        "E": {value: 1},
+        "E+": {value: 2},
+        "D": {value: 3},
+        "D+": {value: 4},
+        "C": {value: 5},
+        "C+": {value: 6},
+        "B": {value: 7},
+        "B+": {value: 8},
+        "A": {value: 9},
+        "A+": {value: 10},
+        "S": {value: 11}
+    }
+
+    let rank_dropdown = [
+        {
+            "id":0,
+            "text" : "E"
+        },
+        {
+            "id":1,
+            "text" : "E+"
+        },
+        {
+            "id":2,
+            "text" : "D"
+        },
+        {
+            "id":3,
+            "text" : "D+"
+        },
+        {
+            "id":4,
+            "text" : "C"
+        },
+        {
+            "id":5,
+            "text" : "C+"
+        },
+        {
+            "id":6,
+            "text" : "B"
+        },
+        {
+            "id":7,
+            "text" : "B+"
+        },
+        {
+            "id":8,
+            "text" : "A"
+        },
+        {
+            "id":9,
+            "text" : "A+"
+        },
+        {
+            "id":10,
+            "text" : "S"
+        }
+    ];
+
+    let rank_key = ["sword","lance","axe","bow","brawl","reason","faith","auth","armour","riding","flying"];
+
+    let class_list = [
+        {
+            "children": [
+                {
+                    "id": 0,
+                    "text": null,
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1
+                }
+            ]
+        },
+        {
+            "text": "초급직",
+            "children": [
+                {
+                    "id": 1,
+                    "text": "검사",
+                    "sword": "D",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 0
+                },
+                {
+                    "id": 2,
+                    "text": "병사",
+                    "sword": null,
+                    "lance": "D",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 0
+                },
+                {
+                    "id": 3,
+                    "text": "전사",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "D",
+                    "bow": "D",
+                    "brawl": "D",
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 0
+                },
+                {
+                    "id": 4,
+                    "text": "수도사",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "D",
+                    "faith": "D",
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 0
+                }
+            ]
+        },
+        {
+            "text": "중급직",
+            "children": [
+                {
+                    "id": 5,
+                    "text": "로드",
+                    "sword": "D+",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": "C",
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 1
+                },
+                {
+                    "id": 6,
+                    "text": "용병",
+                    "sword": "C",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 7,
+                    "text": "도적",
+                    "sword": "C",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 8,
+                    "text": "아머 나이트",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "C",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": "D",
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 1
+                },
+                {
+                    "id": 9,
+                    "text": "소셜 나이트",
+                    "sword": null,
+                    "lance": "C",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": "D",
+                    "flying": null,
+                    "count": 2,
+                    "type": 1
+                },
+                {
+                    "id": 10,
+                    "text": "브리건드",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "C",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 11,
+                    "text": "아처",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": "C",
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 12,
+                    "text": "권투사",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": "C",
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 13,
+                    "text": "메이지",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "C",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 14,
+                    "text": "다크 메이지",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "C",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 15,
+                    "text": "프리스트",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": "C",
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 1
+                },
+                {
+                    "id": 16,
+                    "text": "페가수스 나이트",
+                    "sword": null,
+                    "lance": "C",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": "D",
+                    "count": 2,
+                    "type": 1
+                }
+            ]
+        },
+        {
+            "text": "상급직",
+            "children": [
+                {
+                    "id": 17,
+                    "text": "용사",
+                    "sword": "B",
+                    "lance": null,
+                    "axe": "C",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 18,
+                    "text": "소드 마스터",
+                    "sword": "A",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                },
+                {
+                    "id": 19,
+                    "text": "어쌔신",
+                    "sword": "B",
+                    "lance": null,
+                    "axe": null,
+                    "bow": "C",
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 20,
+                    "text": "포트리스",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "B",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": "B",
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 21,
+                    "text": "팔라딘",
+                    "sword": null,
+                    "lance": "B",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": "B",
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 22,
+                    "text": "드래곤 나이트",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "B",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": "B",
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 23,
+                    "text": "워리어",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "A",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                },
+                {
+                    "id": 24,
+                    "text": "스나이퍼",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": "A",
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                },
+                {
+                    "id": 25,
+                    "text": "그래플러",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": "A",
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                },
+                {
+                    "id": 26,
+                    "text": "워록",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "A",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                },
+                {
+                    "id": 27,
+                    "text": "다크 비숍",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "A",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                },
+                {
+                    "id": 28,
+                    "text": "비숍",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": "A",
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 1,
+                    "type": 2
+                }
+            ]
+        },
+        {
+            "text": "특급",
+            "children": [
+                {
+                    "id": 29,
+                    "text": "트릭스터",
+                    "sword": "B",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": "B",
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 30,
+                    "text": "배틀 몽크/시스터",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": "B+",
+                    "reason": null,
+                    "faith": "C+",
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 31,
+                    "text": "다크 페가수스",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "B+",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": "C",
+                    "count": 2,
+                    "type": 2
+                },
+                {
+                    "id": 32,
+                    "text": "발큐리아",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "B+",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": "B",
+                    "flying": null,
+                    "count": 2,
+                    "type": 2
+                }
+            ]
+        },
+        {
+            "text": "최상급직",
+            "children": [
+                {
+                    "id": 33,
+                    "text": "팔콘 나이트",
+                    "sword": "C",
+                    "lance": "A",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": "B+",
+                    "count": 3,
+                    "type": 3
+                },
+                {
+                    "id": 34,
+                    "text": "드래곤 마스터",
+                    "sword": null,
+                    "lance": "C",
+                    "axe": "A",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": "A",
+                    "count": 3,
+                    "type": 3
+                },
+                {
+                    "id": 35,
+                    "text": "에피타프",
+                    "sword": "A",
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "B+",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 3
+                },
+                {
+                    "id": 36,
+                    "text": "그레이트 나이트",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "B+",
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": "A",
+                    "riding": "B+",
+                    "flying": null,
+                    "count": 3,
+                    "type": 3
+                },
+                {
+                    "id": 37,
+                    "text": "보우 나이트",
+                    "sword": null,
+                    "lance": "C",
+                    "axe": null,
+                    "bow": "A",
+                    "brawl": null,
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": "A",
+                    "flying": null,
+                    "count": 3,
+                    "type": 3
+                },
+                {
+                    "id": 38,
+                    "text": "다크 나이트",
+                    "sword": null,
+                    "lance": "C",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "B+",
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": "A",
+                    "flying": null,
+                    "count": 3,
+                    "type": 3
+                },
+                {
+                    "id": 39,
+                    "text": "홀리 나이트",
+                    "sword": null,
+                    "lance": "C",
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": null,
+                    "faith": "B+",
+                    "auth": null,
+                    "armour": null,
+                    "riding": "A",
+                    "flying": null,
+                    "count": 3,
+                    "type": 3
+                },
+                {
+                    "id": 40,
+                    "text": "워 마스터",
+                    "sword": null,
+                    "lance": null,
+                    "axe": null,
+                    "bow": null,
+                    "brawl": null,
+                    "reason": "A",
+                    "faith": "A",
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 3
+                },
+                {
+                    "id": 41,
+                    "text": "그레모리",
+                    "sword": null,
+                    "lance": null,
+                    "axe": "A",
+                    "bow": null,
+                    "brawl": "A",
+                    "reason": null,
+                    "faith": null,
+                    "auth": null,
+                    "armour": null,
+                    "riding": null,
+                    "flying": null,
+                    "count": 2,
+                    "type": 3
+                }
+            ]
+        }
+    ];
+
+    function classchange_rate(classType, requiredLevel, luck, count) {
+        let luck_bonus = Math.floor(luck/2);
+        let required_constant = 0;
+        if(classType === 0 || classType === 1 || (classType === 2 && count === 1)) {
+            required_constant = 40;
+        } else if (classType === 2 && count > 1) {
+            required_constant = 32;
+        } else if (classType === 3) {
+            required_constant = 20;
+        }
+        let bonus = 100 - required_constant * requiredLevel + luck_bonus;
+        return bonus > 0 ? bonus : 0;
+    }
+
+    function calc_classchange() {
+        let class_data = $('#class_list').select2('data')[0];
+
+        if(class_data["id"] === "0") {
+            return;
+        }
+
+        let count = class_data['count'];
+        let required = 0;
+        let luck = $('#luck').val();
+        if(class_data['id'] === "3" || class_data['id'] === "4") {
+            //택1
+            required = 2; //최댓값으로 이니셜라이즈
+            rank_key.forEach(key => {
+                if(class_data[key] !== null) {
+                    let selected_rank = $('#' + key).select2('data')[0]['text'];
+                    let rank_gap = rank[class_data[key]].value - rank[selected_rank].value;
+                    if(required > rank_gap) {
+                        required = rank_gap;
+                    }
+                }
+            });
+        } else {
+            rank_key.forEach(key => {
+                if(class_data[key] !== null) {
+                    let selected_rank = $('#' + key).select2('data')[0]['text'];
+                    let rank_gap = rank[class_data[key]].value - rank[selected_rank].value;
+                    required += rank_gap > 0 ? rank_gap : 0;
+                }
+            });
+        }
+
+        let result = classchange_rate(class_data["type"], required, luck, count);
+        $('#result').html(result);
+    }
+
+    function scrollTop_func() {
+        $('html, body').animate({
+            scrollTop: $("#navBar").offset().top
+        }, 100, 'linear');
+    }
+
+    $('#luck').on("change", function (e) {
+        calc_classchange();
+    });
+
+    $('#class_list').on('select2:select', function (e) {
+        let class_data = $('#class_list').select2('data')[0];
+        let class_dropdown_html = "";
+
+        rank_key.forEach(key => {
+            if(class_data[key] !== null) {
+                class_dropdown_html += `<img src = "image/${key}.png" height="25px"> 요구 랭크 : ${class_data[key]}<br>
+            <select class="select_rank" id="${key}" style="width : 100%;"></select>`;
+            }
+        });
+
+        $('#dropdown_col').html(class_dropdown_html);
+        $('.select_rank').select2({
+            data: rank_dropdown,
+            placeholder: "랭크",
+            width: 'element',
+        });
+
+        calc_classchange();
+    });
+
+    $(document).delegate("select[class^='select_rank']",'select2:select', function (e) {
+        calc_classchange();
+    });
+
+    $(document).ready(function () {
+        $('#class_list').select2({
+            data: class_list,
+            placeholder: "클래스",
+            width: 'element',
+        });
+
+
+        $('#result').html("0");
+    });
+
+</script>
