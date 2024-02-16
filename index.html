@@ -921,7 +921,12 @@
             required_constant = 20;
         }
         let bonus = 100 - required_constant * requiredLevel + luck_bonus;
-        return bonus > 0 ? bonus : 0;
+        if(bonus > 100) {
+            bonus = 100;
+        } else if (bonus <= 0) {
+            bonus = 0;
+        }
+        return bonus;
     }
 
     function calc_classchange() {
